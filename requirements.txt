@@ -8,3 +8,5 @@ uvicorn==0.18.0
 sqlite-utils==3.25.0
 loguru==0.6.0  # Pour la journalisation
 webdriver-manager==3.8.5
+pytest
+requests
