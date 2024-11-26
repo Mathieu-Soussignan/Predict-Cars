@@ -15,8 +15,8 @@ class Vehicule(Base):
     transmission_id = Column("Transmission_ID", Integer, ForeignKey("Transmission.ID_Transmission"), index=True)
 
     # Relations
-    carburant = relationship("Carburant")
-    transmission = relationship("Transmission")
+    carburant = relationship("Carburant", lazy="joined")
+    transmission = relationship("Transmission", lazy="joined")
 
 class Carburant(Base):
     __tablename__ = "Carburant"

@@ -20,7 +20,7 @@ def get_db():
 def read_vehicules(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     return crud.get_vehicules(db, skip=skip, limit=limit)
 
-@app.post("/vehicules/", response_model=schemas.Vehicule)
+@app.post("/vehicules/", response_model=schemas.Vehicule, status_code=201)
 def create_vehicule(vehicule: schemas.VehiculeCreate, db: Session = Depends(get_db)):
     return crud.create_vehicule(db=db, vehicule=vehicule)
 
@@ -31,12 +31,9 @@ def update_vehicule(vehicule_id: int, vehicule_update: schemas.VehiculeUpdate, d
         raise HTTPException(status_code=404, detail="Véhicule non trouvé")
     return db_vehicule
 
-@app.delete("/vehicules/{vehicule_id}", response_model=schemas.Vehicule)
+@app.delete("/vehicules/{vehicule_id}", response_model=dict)
 def delete_vehicule(vehicule_id: int, db: Session = Depends(get_db)):
-    db_vehicule = crud.delete_vehicule(db=db, vehicule_id=vehicule_id)
-    if db_vehicule is None:
-        raise HTTPException(status_code=404, detail="Véhicule non trouvé")
-    return db_vehicule
+    return crud.delete_vehicule(db=db, vehicule_id=vehicule_id)
 
 
 # # Routes pour les marques

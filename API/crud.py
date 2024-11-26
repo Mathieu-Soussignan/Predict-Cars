@@ -1,4 +1,5 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
+from fastapi import HTTPException
 from . import models, schemas
 
 # Fonction pour obtenir la liste des véhicules
@@ -17,8 +18,9 @@ def create_vehicule(db: Session, vehicule: schemas.VehiculeCreate):
 def update_vehicule(db: Session, vehicule_id: int, vehicule_update: schemas.VehiculeUpdate):
     db_vehicule = db.query(models.Vehicule).filter(models.Vehicule.id == vehicule_id).first()
     if not db_vehicule:
-        return None
-    for key, value in vehicule_update.dict(exclude_unset=True).items():
+        raise HTTPException(status_code=404, detail="Véhicule non trouvé")
+    update_data = vehicule_update.dict(exclude_unset=True)
+    for key, value in update_data.items():
         setattr(db_vehicule, key, value)
     db.commit()
     db.refresh(db_vehicule)
@@ -26,8 +28,20 @@ def update_vehicule(db: Session, vehicule_id: int, vehicule_update: schemas.Vehi
 
 # Fonction pour supprimer un véhicule
 def delete_vehicule(db: Session, vehicule_id: int):
-    db_vehicule = db.query(models.Vehicule).filter(models.Vehicule.id == vehicule_id).first()
-    if db_vehicule:
+    try:
+        # Rechercher le véhicule à supprimer
+        db_vehicule = db.query(models.Vehicule).filter(models.Vehicule.id == vehicule_id).first()
+        
+        if not db_vehicule:
+            raise HTTPException(status_code=404, detail="Véhicule non trouvé")
+
+        # Supprimer le véhicule
         db.delete(db_vehicule)
         db.commit()
-    return db_vehicule
+
+        # Retourner un simple message de confirmation
+        return {"message": f"Véhicule avec ID {vehicule_id} supprimé avec succès"}
+
+    except Exception as e:
+        db.rollback()  # Annuler la transaction en cas d'erreur
+        raise HTTPException(status_code=500, detail=f"Erreur serveur lors de la suppression du véhicule: {str(e)}")
