@@ -1,10 +1,14 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from API import models, schemas, crud
 from API.database import SessionLocal, engine
+import joblib
+import pandas as pd
+import logging
 
-# # Créer les tables dans la base de données
-# models.Base.metadata.create_all(bind=engine)
+# Configurer le logging
+logging.basicConfig(level=logging.INFO)
 
 app = FastAPI()
 
@@ -15,6 +19,9 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# Charger les modèles nécessaires
+random_forest_model = joblib.load("./models/random_forest_model.pkl")
 
 @app.get("/vehicules/", response_model=list[schemas.Vehicule])
 def read_vehicules(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
@@ -35,30 +42,49 @@ def update_vehicule(vehicule_id: int, vehicule_update: schemas.VehiculeUpdate, d
 def delete_vehicule(vehicule_id: int, db: Session = Depends(get_db)):
     return crud.delete_vehicule(db=db, vehicule_id=vehicule_id)
 
+class PredictRequest(BaseModel):
+    kilometrage: float
+    annee: int
+    marque: str
+    carburant: str
+    transmission: str
+    modele: str
+    etat: str
 
-# # Routes pour les marques
-# @app.post("/marques/", response_model=schemas.Marque)
-# def create_marque(marque: schemas.MarqueCreate, db: Session = Depends(get_db)):
-#     return crud.create_marque(db=db, marque=marque)
+    class Config:
+        schema_extra = {
+            "example": {
+                "kilometrage": 15000,
+                "annee": 2019,
+                "marque": "Peugeot",
+                "carburant": "Essence",
+                "transmission": "Manuelle",
+                "modele": "208",
+                "etat": "Occasion"
+            }
+        }
 
-# @app.get("/marques/", response_model=list[schemas.Marque])
-# def read_marques(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-#     return crud.get_marques(db, skip=skip, limit=limit)
+@app.post("/predict_random_forest")
+def predict_random_forest(request: PredictRequest):
+    try:
+        # Convertir les données de la requête en DataFrame
+        input_data = pd.DataFrame([request.dict()])
+        logging.info(f"Input data: {input_data}")
 
-# # Routes pour les carburants
-# @app.post("/carburants/", response_model=schemas.Carburant)
-# def create_carburant(carburant: schemas.CarburantCreate, db: Session = Depends(get_db)):
-#     return crud.create_carburant(db=db, carburant=carburant)
+        # S'assurer que les colonnes correspondent aux colonnes utilisées lors de l'entraînement
+        column_order = [
+            'Kilométrage', 'Année', 'Marque', 'Type de Carburant', 
+            'Transmission', 'Modèle', 'Etat'
+        ]
+        
+        # Adapter les noms des colonnes à ceux du modèle
+        input_data.columns = column_order
+        logging.info(f"Input data with correct columns: {input_data}")
 
-# @app.get("/carburants/", response_model=list[schemas.Carburant])
-# def read_carburants(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-#     return crud.get_carburants(db, skip=skip, limit=limit)
-
-# # Routes pour les transmissions
-# @app.post("/transmissions/", response_model=schemas.Transmission)
-# def create_transmission(transmission: schemas.TransmissionCreate, db: Session = Depends(get_db)):
-#     return crud.create_transmission(db=db, transmission=transmission)
-
-# @app.get("/transmissions/", response_model=list[schemas.Transmission])
-# def read_transmissions(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-#     return crud.get_transmissions(db, skip=skip, limit=limit)
+        # Faire la prédiction directement avec le modèle
+        prediction = random_forest_model.predict(input_data)
+        return {"prediction": float(prediction[0])}
+    
+    except Exception as e:
+        logging.error(f"Erreur lors de la prédiction: {e}")
+        raise HTTPException(status_code=400, detail="Erreur lors de la prédiction")

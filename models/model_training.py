@@ -1,4 +1,5 @@
 import pandas as pd
+import joblib  # Importer Joblib pour sauvegarder les modèles
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestRegressor
@@ -32,32 +33,18 @@ X_train_logistic, X_test_logistic, y_train_logistic, y_test_logistic = train_tes
 # Entraînement du modèle de régression logistique
 logistic_model = LogisticRegression(max_iter=1000)
 logistic_model.fit(X_train_logistic, y_train_logistic)
-y_pred_logistic = logistic_model.predict(X_test_logistic)
+
+# Sauvegarder le scaler
+joblib.dump(scaler, "../models/scaler.pkl")
+
+# Sauvegarde du modèle de régression logistique avec Joblib
+joblib.dump(logistic_model, '../models/logistic_regression_model.pkl')
+
+columns_after_encoding = df_encoded.columns
+joblib.dump(columns_after_encoding, "../models/columns_after_encoding.pkl")
 
 # Évaluation du modèle de régression logistique
+y_pred_logistic = logistic_model.predict(X_test_logistic)
 accuracy_logistic = accuracy_score(y_test_logistic, y_pred_logistic)
-classification_report_logistic = classification_report(y_test_logistic, y_pred_logistic)
 print("\nRégression Logistique :")
 print(f"Accuracy : {accuracy_logistic:.2f}")
-print("Rapport de classification :")
-print(classification_report_logistic)
-
-# **Modèle de Régression Non Linéaire - Random Forest**
-# Préparation des données pour la régression non linéaire
-X_regression = df_encoded.drop(columns=['Prix', 'Prix_binaire'])
-y_regression = df_encoded['Prix']
-
-# Division des données en ensemble d'entraînement et de test
-X_train_reg, X_test_reg, y_train_reg, y_test_reg = train_test_split(X_regression, y_regression, test_size=0.2, random_state=42)
-
-# Entraînement du modèle de régression non linéaire (Random Forest)
-forest_model = RandomForestRegressor(n_estimators=100, random_state=42)
-forest_model.fit(X_train_reg, y_train_reg)
-y_pred_forest = forest_model.predict(X_test_reg)
-
-# Évaluation du modèle de régression non linéaire
-mse_forest = mean_squared_error(y_test_reg, y_pred_forest)
-r2_forest = r2_score(y_test_reg, y_pred_forest)
-print("\nRégression avec Random Forest :")
-print(f"MSE : {mse_forest:.2f}")
-print(f"R² : {r2_forest:.2f}")
