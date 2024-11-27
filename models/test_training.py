@@ -1,4 +1,5 @@
 import pandas as pd
+import joblib  # Importer Joblib pour sauvegarder le modèle
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
@@ -43,24 +44,18 @@ forest_model = RandomForestRegressor(random_state=42)
 grid_search = GridSearchCV(estimator=forest_model, param_grid=param_grid, cv=5, n_jobs=-1, verbose=2)
 grid_search.fit(X_train_reg, y_train_reg)
 
+# Sauvegarde du modèle optimisé avec Joblib
+joblib.dump(grid_search.best_estimator_, '../models/random_forest_model.pkl')
+
 # Meilleurs hyperparamètres
 best_params = grid_search.best_params_
 print("\nMeilleurs hyperparamètres :")
 print(best_params)
 
-# Entraînement du modèle optimisé
-y_pred_forest = grid_search.predict(X_test_reg)
-
 # Évaluation du modèle optimisé
+y_pred_forest = grid_search.predict(X_test_reg)
 mse_forest = mean_squared_error(y_test_reg, y_pred_forest)
 r2_forest = r2_score(y_test_reg, y_pred_forest)
 print("\nRégression avec Random Forest Optimisé :")
 print(f"MSE : {mse_forest:.2f}")
 print(f"R² : {r2_forest:.2f}")
-
-# Importance des caractéristiques
-feature_importances = grid_search.best_estimator_.feature_importances_
-importance_df = pd.DataFrame({'Caractéristique': X_regression.columns, 'Importance': feature_importances})
-importance_df = importance_df.sort_values(by='Importance', ascending=False)
-print("\nImportance des caractéristiques :")
-print(importance_df.head(10))

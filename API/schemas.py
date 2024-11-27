@@ -51,6 +51,24 @@ class VehiculeBase(BaseModel):
 class VehiculeCreate(VehiculeBase):
     pass
 
+class PredictRequest(BaseModel):
+    kilometrage: float
+    annee: int
+    marque: str
+    carburant: str
+    transmission: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "kilometrage": 15000,
+                "annee": 2019,
+                "marque": "Peugeot",
+                "carburant": "Essence",
+                "transmission": "Manuelle"
+            }
+        }
+
 class VehiculeUpdate(BaseModel):
     marque_id: Optional[int] = None
     modele: Optional[str] = None
