@@ -86,3 +86,31 @@ class Vehicule(VehiculeBase):
 
     class Config:
         orm_mode = True
+        
+class UserCreate(BaseModel):
+    email: str
+    nom: str
+    password: str
+
+# Schéma pour la lecture d'un utilisateur (par exemple, lors de la récupération de ses informations)
+class UserRead(BaseModel):
+    id: int
+    email: str
+    nom: str
+
+    class Config:
+        orm_mode = True
+
+# Schéma pour la mise à jour d'un utilisateur
+class UserUpdate(BaseModel):
+    email: Optional[str] = None
+    nom: Optional[str] = None
+    password: Optional[str] = None
+    
+class User(BaseModel):
+    id: int
+    email: str
+    nom: str
+
+    class Config:
+        orm_mode = True
