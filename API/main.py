@@ -126,3 +126,26 @@ def predict_combined(request: PredictRequest):
     except Exception as e:
         logging.error(f"Erreur lors de la prédiction combinée: {e}")
         raise HTTPException(status_code=400, detail="Erreur lors de la prédiction combinée")
+
+# Endpoints CRUD pour les utilisateurs
+@app.get("/users/", response_model=list[schemas.User])
+def read_users(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+    return crud.get_all_users(db, skip=skip, limit=limit)
+
+@app.post("/users/", response_model=schemas.User, status_code=201)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    return crud.create_user(db=db, user=user)
+
+@app.put("/users/{user_id}", response_model=schemas.User)
+def update_user(user_id: int, user_update: schemas.UserUpdate, db: Session = Depends(get_db)):
+    db_user = crud.update_user(db=db, user_id=user_id, user_update=user_update)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    return db_user
+
+@app.delete("/users/{user_id}", response_model=dict)
+def delete_user(user_id: int, db: Session = Depends(get_db)):
+    user_deleted = crud.delete_user(db=db, user_id=user_id)
+    if user_deleted is None:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    return {"message": "Utilisateur supprimé avec succès"}
