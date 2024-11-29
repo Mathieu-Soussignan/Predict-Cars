@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
 from API import models, schemas, crud
 from API.database import SessionLocal, engine
 import joblib
@@ -11,6 +12,15 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 app = FastAPI()
+
+# Ajouter le middleware CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Remplace "*" par l'URL de ton frontend en production pour plus de sécurité
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Dépendance pour obtenir une session DB
 def get_db():

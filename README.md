@@ -1,24 +1,22 @@
-# Application de Prédiction des Voitures d'Occasion
+# Application Prédict Car
 
 ## Introduction
 
-Ce projet est une application de prédiction des prix des voitures d'occasion, conçue dans le cadre de notre formation en développement IA. L'application combine des technologies de machine learning et une interface utilisateur intuitive pour prédire le prix des voitures d'occasion et classifier l'offre comme « Bonne affaire » ou « Mauvaise affaire ». L'application a été construite avec Streamlit et FastAPI, et elle utilise des modèles de Random Forest et de régression logistique pour offrir une expérience utilisateur simple mais efficace, tout en fournissant des informations utiles aux utilisateurs pour leurs décisions d'achat.
+Ce projet est une application de prédiction des prix des voitures d'occasion, conçue dans le cadre de notre formation en développement IA. L'application combine des technologies de machine learning et une interface utilisateur intuitive pour prédire le prix des voitures d'occasion et classifier l'offre comme « Bonne affaire » ou « Mauvaise affaire ». L'application a été construite avec React et FastAPI, et elle utilise des modèles de Random Forest et de régression logistique pour offrir une expérience utilisateur simple mais efficace, tout en fournissant des informations utiles aux utilisateurs pour leurs décisions d'achat.
 
 ## Fonctionnalités Principales
-
-1. **Inscription et Connexion Utilisateur :** L'application propose un système d'authentification où les utilisateurs peuvent s'inscrire, se connecter et se déconnecter. L'interface de connexion est sécurisée et la session de l'utilisateur reste active jusqu'à ce qu'il se déconnecte manuellement.
+1. **Interface Utilisateur Moderne :** Une interface utilisateur construite avec React et stylisée avec Material-UI pour une meilleure expérience utilisateur.
 2. **Recherche et Prédiction de Prix :** L'utilisateur peut rechercher le prix d'une voiture d'occasion en fournissant des informations telles que le kilométrage, l'année, la marque, le carburant, la transmission, le modèle et l'état du véhicule. Le modèle Random Forest est utilisé pour prédire le prix, offrant une estimation précise basée sur les caractéristiques fournies.
-3. **Classification de l'Affaire :** En plus de la prédiction de prix, le modèle de régression logistique permet de classifier l'offre comme « Bonne affaire » ou « Mauvaise affaire », donnant à l'utilisateur un indicateur supplémentaire pour évaluer la qualité de l'offre.
-4. **Compte Utilisateur :** Une page de compte utilisateur est disponible pour visualiser les détails du compte. Les recherches passées et l'historique des prédictions pourront être implémentés dans une version future pour une meilleure expérience utilisateur.
-5. **Navigation Personnalisée :** Un menu spécifique pour les utilisateurs connectés est disponible, leur permettant d'accéder aux prédictions, à leur compte, ou de se déconnecter facilement pour une navigation fluide.
+3. **Classification des offres :** En plus de la prédiction de prix, le modèle de régression logistique permet de classifier l'offre comme « Bonne affaire » ou « Mauvaise affaire », donnant à l'utilisateur un indicateur supplémentaire pour évaluer la qualité de l'offre.
 
 ## Technologies Utilisées
 
 - **Backend :** FastAPI pour la gestion de l'API et des routes backend, offrant une performance et une flexibilité optimales.
-- **Frontend :** Streamlit pour une interface utilisateur simple, dynamique et accessible à tout utilisateur, même sans connaissances techniques.
+- **Frontend :** React, Material-UI pour une interface utilisateur simple, dynamique.
 - **Base de données :** SQLAlchemy pour la gestion des utilisateurs et des véhicules, garantissant la fiabilité et la persistance des données.
 - **Machine Learning :** Scikit-Learn pour les modèles de prédiction (Random Forest et Régression Logistique), offrant une capacité d'apprentissage supervisé robuste et précise.
-- **Autres :** bcrypt pour le hashage sécurisé des mots de passe, Pandas pour la manipulation et l'analyse des données de manière efficace.
+- **Modélisation :** Scikit-learn, Random Forest, Régression Logistique.
+- **Autres :** Vite.js pour le développement du frontend.
 
 ## Installation
 
@@ -27,6 +25,7 @@ Ce projet est une application de prédiction des prix des voitures d'occasion, c
 - **Python 3.8+** doit être installé sur votre système.
 - **Pipenv** ou **pip** pour la gestion des dépendances.
 - **Base de données SQLite** pour gérer les données utilisateurs et véhicules.
+- **Node.js et npm** doivent être installés pour exécuter le frontend.
 
 ### Étapes d'Installation
 
@@ -41,6 +40,11 @@ Ce projet est une application de prédiction des prix des voitures d'occasion, c
 
    ```bash
    pip install -r requirements.txt
+   ```
+  Pour le frontend :
+
+   ```bash
+   npm install
    ```
 
 3. **Initialiser la base de données :**
@@ -62,58 +66,53 @@ Ce projet est une application de prédiction des prix des voitures d'occasion, c
    uvicorn main:app --reload
    ```
 
-6. **Lancer l'interface Streamlit :**
+6. **Lancer l'interface React :**
 
    ```bash
-   streamlit run streamlit_app/app.py
+   npm run dev
    ```
 
 ## Utilisation
 
-### Inscription et Connexion
-
-- Ouvrez l'application Streamlit via votre navigateur (par défaut sur `http://localhost:8501`).
-- Vous pouvez vous inscrire à l'aide d'un email, d'un nom et d'un mot de passe sécurisés.
-- Après l'inscription, utilisez la page de connexion pour accéder à votre compte et explorer les fonctionnalités de l'application.
+L'application est accessible via le frontend React, qui tourne par défaut sur `http://localhost:5173`. Utilisez le frontend pour accéder aux fonctionnalités de prédiction des prix des voitures et à la classification des offres.
 
 ### Prédiction des Voitures d'Occasion
 
-- Après connexion, accédez à la page de prédiction via la barre de navigation.
 - Renseignez les caractéristiques du véhicule pour obtenir une estimation précise du prix et savoir si l'offre est une bonne ou une mauvaise affaire.
 
 ## Schéma de la Base de Données
 
-- **Users** : contient les informations des utilisateurs enregistrés (email, nom, mot de passe hashé) pour garantir une gestion sécurisée des comptes.
 - **Vehicule** : contient les informations sur les véhicules disponibles dans la base (marque, modèle, année, état, etc.), permettant une analyse approfondie pour chaque recherche de prédiction.
 
 ## Architecture du Projet
 
 - **API/** : contient les fichiers backend (FastAPI, modèles, schémas, CRUD) pour gérer les interactions côté serveur.
-- **models/** : contient les fichiers d'entraînement des modèles et les modèles sauvegardés en `.pkl`.
-- **streamlit\_app/** : contient le code de l'application front-end Streamlit, responsable de l'interface utilisateur.
 - **data/** : contient les fichiers de données utilisés pour l'entraînement du modèle, assurant la reproductibilité des prédictions.
-- **sql/** : contient les scripts SQL pour créer les tables de la base de données.
+- **models/** : contient les fichiers d'entraînement des modèles et les modèles sauvegardés en `.pkl`.
 - **notebooks/** : contient les notebooks Jupyter pour l'exploration des données et les essais de modélisation.
 - **scripts/** : contient des scripts auxiliaires, comme ceux pour insérer des données dans la base de données ou scraper des informations en ligne.
+- **sql/** : contient les scripts SQL pour créer les tables de la base de données.
+- **tests/** : contient les tests unitaires pour vérifier la bonne exécution de l'application.
+- **voiture-prediction/** : Contient l'interface utilisateur développée avec React.
+- **database/** : Fichiers relatifs à la base de données, y compris la configuration de SQLAlchemy.
+- **create_db.py** : Script pour initialiser la base de données.
+
 
 ## Documentation de l'API
 
 ### Endpoints Disponibles
 
-1. **/vehicules/** (GET, POST, PUT, DELETE) : Créer, lire, mettre à jour et supprimer des informations sur les véhicules, permettant une gestion complète des données des véhicules.
-2. **/predict\_combined** (POST) : Prédire le prix d'un véhicule et classifier l'offre, fournissant une prédiction complète en une seule requête.
-3. **/users/** (GET, POST, PUT, DELETE) : Gestion des utilisateurs, incluant la création, mise à jour et suppression des comptes (fonctionnalités à implémenter pour le futur).
+L'API FastAPI fournit des endpoints pour la prédiction des prix, et la gestion des véhicules. La documentation Swagger est accessible à l'adresse `http://localhost:8000/docs` lorsque le serveur est en cours d'exécution.
 
 ## Améliorations Futures
 
-- **Stockage des Recherches :** Enregistrer les recherches effectuées par l'utilisateur pour les afficher dans la page de compte, permettant une consultation et une analyse historiques.
-- **Amélioration de l'UX :** Ajout d'un historique des prédictions, affichage des tendances des prix sur un graphique pour mieux visualiser l'évolution des prix.
-- **Validation Avancée des Champs :** Ajouter une vérification plus poussée des champs à remplir (ex: format de l'email, valeurs numériques réalistes), garantissant des saisies précises et pertinentes.
+- **Améliorations UX/UI :** Ajout de fonctionnalités plus avancées dans l'interface React, comme des graphiques interactifs et des filtres de recherche.
+- **Modèles de Machine Learning :** Exploration d'autres modèles plus avancés pour améliorer la précision des prédictions.
+- **Authentification :** Ajouter une authentification plus robuste pour sécuriser l'application.
 
 ## Crédits
 
 - **Équipe de Développement :** Projet réalisé dans le cadre d'une formation en développement IA. Merci à toute l'équipe pour la collaboration, l'engagement et la persévérance tout au long du projet !
-
   - Sébastien Rapuzzi
   - Yamine Aissani
   - Mathieu Soussignan
