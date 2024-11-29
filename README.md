@@ -15,7 +15,6 @@ Ce projet est une application de prédiction des prix des voitures d'occasion, c
 - **Frontend :** React, Material-UI pour une interface utilisateur simple, dynamique.
 - **Base de données :** SQLAlchemy pour la gestion des utilisateurs et des véhicules, garantissant la fiabilité et la persistance des données.
 - **Machine Learning :** Scikit-Learn pour les modèles de prédiction (Random Forest et Régression Logistique), offrant une capacité d'apprentissage supervisé robuste et précise.
-- **Modélisation :** Scikit-learn, Random Forest, Régression Logistique.
 - **Autres :** Vite.js pour le développement du frontend.
 
 ## Installation
@@ -113,9 +112,9 @@ L'API FastAPI fournit des endpoints pour la prédiction des prix, et la gestion 
 ## Crédits
 
 - **Équipe de Développement :** Projet réalisé dans le cadre d'une formation en développement IA. Merci à toute l'équipe pour la collaboration, l'engagement et la persévérance tout au long du projet !
-  - Sébastien Rapuzzi
-  - Yamine Aissani
-  - Mathieu Soussignan
+  - [Sébastien Rapuzzi](https://rands.netlify.app/)
+  - [Yamine Aissani](https://www.linkedin.com/in/yamine-aissani-876514254/)
+  - [Mathieu Soussignan](https://mathieu-soussignan.com)
 
 - **Images et Logos :** Les images utilisées pour le design de l'application sont libres de droits, contribuant à une interface visuelle attrayante sans compromettre la conformité légale.
 
