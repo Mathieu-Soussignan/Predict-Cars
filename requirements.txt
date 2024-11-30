@@ -10,3 +10,7 @@ loguru==0.6.0  # Pour la journalisation
 webdriver-manager==3.8.5
 pytest
 requests
+sqlalchemy
+scikit-learn
+numpy
+joblib
