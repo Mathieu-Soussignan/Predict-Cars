@@ -17,6 +17,9 @@ function NavBar() {
         <Button color="inherit" onClick={() => navigate('/predict')}>
           Prédiction Prix
         </Button>
+        <Button color="inherit" onClick={() => navigate('/visualize')}>
+          Visualisation des Données
+        </Button>
       </Toolbar>
     </AppBar>
   );

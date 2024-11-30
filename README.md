@@ -1,4 +1,6 @@
-# Application Prédict Car
+# Prédict Car 
+
+### Une application de prédiction des prix des voitures d'occasion utilisant l'IA.
 
 ## Introduction
 
@@ -8,11 +10,13 @@ Ce projet est une application de prédiction des prix des voitures d'occasion, c
 1. **Interface Utilisateur Moderne :** Une interface utilisateur construite avec React et stylisée avec Material-UI pour une meilleure expérience utilisateur.
 2. **Recherche et Prédiction de Prix :** L'utilisateur peut rechercher le prix d'une voiture d'occasion en fournissant des informations telles que le kilométrage, l'année, la marque, le carburant, la transmission, le modèle et l'état du véhicule. Le modèle Random Forest est utilisé pour prédire le prix, offrant une estimation précise basée sur les caractéristiques fournies.
 3. **Classification des offres :** En plus de la prédiction de prix, le modèle de régression logistique permet de classifier l'offre comme « Bonne affaire » ou « Mauvaise affaire », donnant à l'utilisateur un indicateur supplémentaire pour évaluer la qualité de l'offre.
+4. **Visualisation des données interactives :** Utilisation de Plotly pour visualiser les données de manière interactive, permettant aux utilisateurs de mieux explorer et comprendre les tendances des prix.
+5. **Progression de Prédiction** : Ajout d'une barre de progression visible pendant le calcul de la prédiction pour améliorer l'expérience utilisateur.
 
 ## Technologies Utilisées
 
 - **Backend :** FastAPI pour la gestion de l'API et des routes backend, offrant une performance et une flexibilité optimales.
-- **Frontend :** React, Material-UI pour une interface utilisateur simple, dynamique.
+- **Frontend :** React, Material-UI pour une interface utilisateur simple, dynamique, et Plotly pour des graphiques interactifs.
 - **Base de données :** SQLAlchemy pour la gestion des utilisateurs et des véhicules, garantissant la fiabilité et la persistance des données.
 - **Machine Learning :** Scikit-Learn pour les modèles de prédiction (Random Forest et Régression Logistique), offrant une capacité d'apprentissage supervisé robuste et précise.
 - **Autres :** Vite.js pour le développement du frontend.
@@ -108,6 +112,7 @@ L'API FastAPI fournit des endpoints pour la prédiction des prix, et la gestion 
 - **Améliorations UX/UI :** Ajout de fonctionnalités plus avancées dans l'interface React, comme des graphiques interactifs et des filtres de recherche.
 - **Modèles de Machine Learning :** Exploration d'autres modèles plus avancés pour améliorer la précision des prédictions.
 - **Authentification :** Ajouter une authentification plus robuste pour sécuriser l'application.
+- **Système de Notification :** Ajouter des notifications push lorsque les prédictions sont prêtes.
 
 ## Crédits
 

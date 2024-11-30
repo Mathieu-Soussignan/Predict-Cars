@@ -11,6 +11,8 @@ import {
   Select,
   MenuItem,
   Slider,
+  LinearProgress,
+  Paper,
 } from '@mui/material';
 
 function PredictionForm() {
@@ -24,6 +26,7 @@ function PredictionForm() {
     etat: 'Occasion',
   });
   const [prediction, setPrediction] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const marquesDisponibles = [
     'Audi', 'BMW', 'Citroën', 'Dacia', 'Fiat', 'Ford', 'Honda', 'Hyundai', 'Jeep', 
@@ -45,14 +48,20 @@ function PredictionForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/predict_combined`,
-        formData
-      );
-      setPrediction(response.data);
+      // Simuler une attente de 3 secondes pour l'utilisateur
+      setTimeout(async () => {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/predict_combined`,
+          formData
+        );
+        setPrediction(response.data);
+        setLoading(false);
+      }, 3000);
     } catch (error) {
       console.error('Erreur lors de la prédiction', error);
+      setLoading(false);
     }
   };
 
@@ -83,8 +92,8 @@ function PredictionForm() {
             step={1}
             valueLabelDisplay="auto"
             name="annee"
-            />
-            <InputLabel>Année</InputLabel>
+          />
+          <InputLabel>Année</InputLabel>
         </FormControl>
         <FormControl fullWidth>
           <InputLabel>Marque</InputLabel>
@@ -109,7 +118,7 @@ function PredictionForm() {
           onChange={handleChange}
         />
         <FormControl fullWidth>
-          <InputLabel></InputLabel>
+          <InputLabel>Transmission</InputLabel>
           <Select
             name="transmission"
             value={formData.transmission}
@@ -135,14 +144,26 @@ function PredictionForm() {
           value={formData.etat}
           onChange={handleChange}
         />
-        <Button variant="contained" color="primary" type="submit">
+        <Button variant="contained" color="primary" type="submit" disabled={loading}>
           Prédire le Prix
         </Button>
       </Box>
+      {loading && (
+        <Box mt={2}>
+          <LinearProgress />
+          <Typography variant="body2" align="center" mt={2}>
+            Prédiction en cours, veuillez patienter...
+          </Typography>
+        </Box>
+      )}
       {prediction && (
-        <Box mt={4}>
-          <Typography variant="h6">Prix estimé : {prediction.predicted_price} €</Typography>
-          <Typography variant="h6">Classification : {prediction.deal_classification}</Typography>
+        <Box mt={4} component={Paper} elevation={3} p={3} sx={{ backgroundColor: prediction.deal_classification === 'Bonne affaire' ? '#c8e6c9' : '#ffcdd2' }}>
+          <Typography variant="h6" align="center">
+            Prix estimé : {prediction.predicted_price} €
+          </Typography>
+          <Typography variant="h6" align="center">
+            Classification : {prediction.deal_classification}
+          </Typography>
         </Box>
       )}
     </Container>
