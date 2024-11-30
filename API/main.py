@@ -1,16 +1,40 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, APIRouter
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
 from API import models, schemas, crud
 from API.database import SessionLocal, engine
 import joblib
 import pandas as pd
 import logging
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+import os
+
+# Utiliser un chemin absolu basé sur le dossier actuel
+base_dir = os.path.dirname(os.path.abspath(__file__))
+# Définir les chemins vers les fichiers CSV respectifs
+year_brand_csv_path = os.path.join(base_dir, "../data/visualizations/year_brand_distribution.csv")
+clustering_csv_path = os.path.join(base_dir, "../data/visualizations/clustering_data.csv")
+
+# Lire les fichiers CSV avec leurs chemins respectifs
+year_brand_df = pd.read_csv(year_brand_csv_path)
+clustering_df = pd.read_csv(clustering_csv_path)
 
 # Configurer le logging
 logging.basicConfig(level=logging.INFO)
 
 app = FastAPI()
+router = APIRouter()
+
+# Ajouter le middleware CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Remplace "*" par l'URL de ton frontend en production pour plus de sécurité
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Dépendance pour obtenir une session DB
 def get_db():
@@ -65,32 +89,6 @@ class PredictRequest(BaseModel):
             }
         }
 
-# @app.post("/predict_random_forest")
-# def predict_random_forest(request: PredictRequest):
-#     try:
-#         # Convertir les données de la requête en DataFrame
-#         input_data = pd.DataFrame([request.dict()])
-#         logging.info(f"Input data: {input_data}")
-
-#         # S'assurer que les colonnes correspondent aux colonnes utilisées lors de l'entraînement
-#         column_order = [
-#             'Kilométrage', 'Année', 'Marque', 'Type de Carburant', 
-#             'Transmission', 'Modèle', 'Etat'
-#         ]
-        
-#         # Adapter les noms des colonnes à ceux du modèle
-#         input_data.columns = column_order
-#         logging.info(f"Input data with correct columns: {input_data}")
-
-#         # Faire la prédiction directement avec le modèle
-#         prediction = random_forest_model.predict(input_data)
-#         return {"prediction": float(prediction[0])}
-    
-#     except Exception as e:
-#         logging.error(f"Erreur lors de la prédiction: {e}")
-#         raise HTTPException(status_code=400, detail="Erreur lors de la prédiction")
-    
-    
 @app.post("/predict_combined")
 def predict_combined(request: PredictRequest):
     try:
@@ -149,3 +147,17 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
     if user_deleted is None:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
     return {"message": "Utilisateur supprimé avec succès"}
+
+# Utiliser des variables différentes pour chaque dataframe
+@router.get("/data/year-brand-distribution")
+def get_year_brand_distribution():
+    # Group by both 'Année' and 'Marque'
+    counts_by_year_and_brand = year_brand_df.groupby(["Année", "Marque"]).size().reset_index(name="Count")
+    return counts_by_year_and_brand.to_dict(orient="records")
+
+@router.get("/data/clustering")
+def get_clustering_data():
+    return clustering_df.to_dict(orient="records")
+
+# Inclure le router
+app.include_router(router)
