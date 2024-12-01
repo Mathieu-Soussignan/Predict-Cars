@@ -12,7 +12,7 @@ class Carburant(CarburantBase):
     id_carburant: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class TransmissionBase(BaseModel):
     type: str
@@ -24,7 +24,7 @@ class Transmission(TransmissionBase):
     id_transmission: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True 
 
 class MarqueBase(BaseModel):
     nom: str
@@ -36,7 +36,7 @@ class Marque(MarqueBase):
     id_marque: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True 
 
 class VehiculeBase(BaseModel):
     marque_id: int
@@ -59,7 +59,7 @@ class PredictRequest(BaseModel):
     transmission: str
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "kilometrage": 15000,
                 "annee": 2019,
@@ -85,7 +85,7 @@ class Vehicule(VehiculeBase):
     transmission: Optional[Transmission] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True 
         
 class UserCreate(BaseModel):
     email: str
@@ -99,7 +99,7 @@ class UserRead(BaseModel):
     nom: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True 
 
 # Schéma pour la mise à jour d'un utilisateur
 class UserUpdate(BaseModel):
@@ -113,4 +113,4 @@ class User(BaseModel):
     nom: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True 
